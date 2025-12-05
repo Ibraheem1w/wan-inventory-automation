@@ -1,0 +1,53 @@
+from datetime import datetime
+import pandas as pd
+
+CANONICAL_COLS = [
+    "circuit_id", "vendor_service_id", "site_code", "carrier", "access_type",
+    "bandwidth_mbps", "status", "start_date", "end_date", "expiration_date",
+    "device_hostname", "wan_interface", "mrc_usd", "source", "last_seen", "quality_score"
+]
+def _stamp(df: pd.DataFrame, source: str) -> pd.DataFrame:
+    df["source"] = source
+    df["last_seen"] = pd.Timestamp.utcnow()
+    df["quality_score"] = 1.0  
+    return df
+
+def normalize_vendor1(df: pd.DataFrame) -> pd.DataFrame:
+    out = pd.DataFrame()
+    out["circuit_id"]      = df["circuit_id"]
+    out["vendor_service_id"]= df["circuit_id"]        
+    out["site_code"]       = df["site_code"]
+    out["carrier"]         = df["carrier"]
+    out["access_type"]     = df.get("access_type", "UNKNOWN")
+    out["bandwidth_mbps"]  = pd.to_numeric(df["bandwidth_mbps"], errors="coerce")
+    out["status"]          = "in_service"              
+    out["start_date"]      = pd.to_datetime(df["start_date"], errors="coerce")
+    out["end_date"]        = pd.to_datetime(df["end_date"], errors="coerce")
+    out["expiration_date"] = out["end_date"]
+    out["device_hostname"] = pd.NA
+    out["wan_interface"]   = pd.NA
+    out["mrc_usd"]         = pd.NA
+    out = _stamp(out, "vendor1")
+    for c in CANONICAL_COLS:
+        if c not in out.columns: out[c] = pd.NA
+    return out[CANONICAL_COLS]
+
+def normalize_vendor2(df: pd.DataFrame) -> pd.DataFrame:
+    out = pd.DataFrame()
+    out["circuit_id"]       = df["vendor_service_id"].str.replace("-", "", regex=False)
+    out["vendor_service_id"]= df["vendor_service_id"]
+    out["site_code"]        = df["location"]
+    out["carrier"]          = df["isp"]
+    out["access_type"]      = df.get("service_type", "UNKNOWN")
+    out["bandwidth_mbps"]   = pd.to_numeric(df["speed_mbps"], errors="coerce")
+    out["status"]           = "in_service"
+    out["start_date"]       = pd.to_datetime(df["activation"], errors="coerce")
+    out["end_date"]         = pd.to_datetime(df["expiry"], errors="coerce")
+    out["expiration_date"]  = out["end_date"]
+    out["device_hostname"]  = pd.NA
+    out["wan_interface"]    = pd.NA
+    out["mrc_usd"]          = pd.NA
+    out = _stamp(out, "vendor2")
+    for c in CANONICAL_COLS:
+        if c not in out.columns: out[c] = pd.NA
+    return out[CANONICAL_COLS]

@@ -1,0 +1,17 @@
+# WAN Circuit Inventory — Canonical Schema
+- circuit_id (str): Primary identifier (from vendor OR internal).
+- vendor_service_id (str): Vendor’s native ID (if different).
+- site_code (str): Internal site/location code.
+- carrier (str): Telco/ISP name.
+- access_type (str): MPLS | DIA | Broadband | LTE.
+- bandwidth_mbps (int): Committed bandwidth.
+- status (str): ordered | provisioned | in_service | change | decommissioned.
+- start_date (date): Service start/activation.
+- end_date (date): Contract end date.
+- expiration_date (date): Billing/termination window (if distinct).
+- device_hostname (str): WAN edge device.
+- wan_interface (str): Interface on the edge device.
+- mrc_usd (float): Monthly recurring charge.
+- source (str): vendor1 | vendor2 | internal_db.
+- last_seen (datetime): When this record was last harvested.
+- quality_score (float): 0–1 confidence based on validation/reconciliation.

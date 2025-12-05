@@ -1,0 +1,13 @@
+circuit_id,vendor_service_id,site_code,carrier,access_type,bandwidth_mbps,status,start_date,end_date,expiration_date,device_hostname,wan_interface,mrc_usd,source,last_seen,quality_score,issue,severity,parsed_end_date
+A123,A123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Duplicate circuit_id,High,
+B555,B555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Duplicate circuit_id,High,
+A123,A-123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Duplicate circuit_id,High,
+B555,B-555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Duplicate circuit_id,High,
+A123,A123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Circuit already expired,High,2024-12-31
+B555,B555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Circuit already expired,High,2023-10-01
+A123,A-123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Circuit already expired,High,2024-12-31
+B555,B-555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Circuit already expired,High,2023-10-01
+A123,A123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Invalid site_code format,Low,2024-12-31
+B555,B555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Invalid site_code format,Low,2023-10-01
+A123,A-123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Invalid site_code format,Low,2024-12-31
+B555,B-555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Invalid site_code format,Low,2023-10-01
