@@ -49,7 +49,7 @@ Each circuit gets a simple quality score based on any issues found.
 Folder Structure
 wan-inventory-automation/
 │
-├── scripts/
+├── src/
 │   ├── harvest.py 
 │   ├── snapshot.py
 │   ├── reconcile.py
@@ -81,13 +81,13 @@ Place them into:
 data/raw/
 
 Generate a snapshot:
-python scripts/harvest.py
+python src/harvest.py
 
 Reconciliation:
-python scripts/reconcile.py
+python src/reconcile.py
 
 Validation:
-python scripts/validate_inventory.py
+python src/validate_inventory.py
 
 ## Why This Project Matters
 
