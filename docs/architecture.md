@@ -1,16 +1,13 @@
-# WAN Automation Project Architecture
+# Architecture
 
-This project automates:
-1. **Harvesting** vendor WAN circuit data
-2. **Normalizing** inconsistent formats
-3. **Reconciling** circuit mismatches
-4. **Validating** data quality
-5. **Generating** expiration alerts
-6. **Preparing** data for dashboards (e.g., Splunk)
+Raw vendor CSV files go into data/raw. harvest.py reads them, converts each vendor format into one standard set of columns, and writes a dated snapshot to data/processed. reconcile.py and validate_inventory.py each read the latest snapshot and write their reports to data/reports.
 
-## Folder Structure
-- data/raw → unmodified vendor files
-- data/processed → cleaned & normalized outputs
-- scripts/ → automation logic
-- tests/ → unit tests
-- docs/ → documentation
+Folders
+
+data/raw: vendor files. The scripts never change these.
+data/processed: dated snapshots, one file per day.
+data/reports: reconciliation and validation output.
+src: all of the scripts.
+docs: this file and the data dictionary.
+
+Ideas not built yet: expiration alerts, dashboards, and automated tests.

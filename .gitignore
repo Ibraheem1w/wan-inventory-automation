@@ -5,3 +5,7 @@ __pycache__/
 data/processed/*
 data/raw/*
 !.gitkeep
+.pytest_cache/
+.DS_Store
+!data/raw/vendor1.csv
+!data/raw/vendor2.csv

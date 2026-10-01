@@ -1,120 +1,77 @@
 import pandas as pd
 from pathlib import Path
-import re
-from datetime import datetime
+from utilities import load_latest_snapshot
 
-PROCESSED = Path("data/processed")
 REPORTS = Path("data/reports")
-REPORTS.mkdir(exist_ok=True)
+PENALTIES = {"High": 0.4, "Medium": 0.2, "Low": 0.1}
+SITE_CODE = r"^[A-Z]{3}\d{2}$"   # e.g. NYC01, MEX01
 
-def load_latest_snapshot():
-    """Load the newest normalized snapshot."""
-    files = sorted(PROCESSED.glob("*.parquet"), reverse=True)
-    if not files:
-        raise FileNotFoundError("No snapshot parquet files found.")
-    return pd.read_parquet(files[0])
+
+def flag(rows, issue, severity):
+    rows = rows.copy()
+    rows["issue"] = issue
+    rows["severity"] = severity
+    return rows
+
 
 def check_missing_fields(df):
-    """Find rows missing critical fields."""
+    # bad dates and numbers become blanks during normalization, so they land here
     required = ["circuit_id", "bandwidth_mbps", "end_date", "site_code"]
-    missing = df[df[required].isnull().any(axis=1)].copy()
-    missing["issue"] = "Missing required field"
-    missing["severity"] = "High"
-    return missing
+    return flag(df[df[required].isna().any(axis=1)], "Missing or unreadable required field", "High")
+
 
 def check_duplicates(df):
-    """Find duplicate circuit IDs."""
-    dup = df[df["circuit_id"].duplicated(keep=False)].copy()
-    dup["issue"] = "Duplicate circuit_id"
-    dup["severity"] = "High"
-    return dup
+    # the same circuit from two vendors is expected, twice from one vendor is not
+    return flag(df[df.duplicated(["circuit_id", "source"], keep=False)],
+                "Duplicate circuit_id within a vendor", "High")
+
 
 def check_bandwidth(df):
-    """Validate bandwidth range (1 Mbps to 10,000 Mbps)."""
-    invalid = df[(df["bandwidth_mbps"] < 1) | (df["bandwidth_mbps"] > 10000)].copy()
-    invalid["issue"] = "Invalid bandwidth"
-    invalid["severity"] = "Medium"
-    return invalid
+    bad = (df["bandwidth_mbps"] < 1) | (df["bandwidth_mbps"] > 10000)
+    return flag(df[bad], "Bandwidth outside 1 to 10,000 Mbps", "Medium")
+
 
 def check_expiration(df):
-    """Detect expired circuits or invalid dates."""
-    today = datetime.now().date()
+    today = pd.Timestamp.now().normalize()
+    end = pd.to_datetime(df["end_date"], errors="coerce")
+    expired = flag(df[end < today], "Circuit already expired", "High")
+    too_far = flag(df[end > today + pd.DateOffset(years=10)], "Expiration more than 10 years out", "Low")
+    return pd.concat([expired, too_far])
 
-    def parse_date(date_val):
-        try:
-            return pd.to_datetime(date_val).date()
-        except:
-            return None
-
-    df["parsed_end_date"] = df["end_date"].apply(parse_date)
-
-    invalid_date = df[df["parsed_end_date"].isnull()].copy()
-    invalid_date["issue"] = "Invalid expiration date format"
-    invalid_date["severity"] = "Medium"
-
-    expired = df[(df["parsed_end_date"].notnull()) & (df["parsed_end_date"] < today)].copy()
-    expired["issue"] = "Circuit already expired"
-    expired["severity"] = "High"
-
-    future_too_far = df[(df["parsed_end_date"].notnull()) & 
-                        (df["parsed_end_date"] > (today.replace(year=today.year + 10)))].copy()
-    future_too_far["issue"] = "Expiration date too far in the future"
-    future_too_far["severity"] = "Low"
-
-    return pd.concat([invalid_date, expired, future_too_far], ignore_index=True)
 
 def check_site_codes(df):
-    """Validate site codes (e.g., NY01, TX03)."""
-    pattern = re.compile(r"^[A-Z]{2}\d{2}$")
-    invalid = df[~df["site_code"].astype(str).str.match(pattern)].copy()
-    invalid["issue"] = "Invalid site_code format"
-    invalid["severity"] = "Low"
-    return invalid
+    ok = df["site_code"].astype("string").str.match(SITE_CODE, na=False)
+    return flag(df[df["site_code"].notna() & ~ok], "Invalid site_code format", "Low")
 
-def build_quality_scores(df, issues_df):
-    """Assign a quality score (0–100) based on issues found."""
-    df = df.copy()
-    df["quality_score"] = 100
 
-    # penalty weights
-    penalties = {
-        "High": 40,
-        "Medium": 20,
-        "Low": 10
-    }
+def build_quality_scores(df, issues):
+    # 1.0 means no issues, same 0 to 1 scale as the data dictionary
+    per_row = issues.drop_duplicates(["row_id", "issue"])
+    penalty = per_row["severity"].map(PENALTIES).groupby(per_row["row_id"]).sum()
+    scored = df.copy()
+    scored["quality_score"] = (1 - scored["row_id"].map(penalty).fillna(0)).clip(lower=0).round(2)
+    return scored
 
-    for _, row in issues_df.iterrows():
-        cid = row["circuit_id"]
-        sev = row["severity"]
-        df.loc[df["circuit_id"] == cid, "quality_score"] -= penalties[sev]
-
-    df["quality_score"] = df["quality_score"].clip(lower=0)
-    return df
 
 def run_validation():
-    df = load_latest_snapshot()
+    REPORTS.mkdir(parents=True, exist_ok=True)
+    df = load_latest_snapshot().reset_index(drop=True)
+    df["row_id"] = df.index
 
-    issues = []
-    issues.append(check_missing_fields(df))
-    issues.append(check_duplicates(df))
-    issues.append(check_bandwidth(df))
-    issues.append(check_expiration(df))
-    issues.append(check_site_codes(df))
+    issues = pd.concat([
+        check_missing_fields(df),
+        check_duplicates(df),
+        check_bandwidth(df),
+        check_expiration(df),
+        check_site_codes(df),
+    ], ignore_index=True).drop(columns=["quality_score"])
 
-    all_issues = pd.concat(issues, ignore_index=True)
+    scored = build_quality_scores(df, issues)
 
-    quality_scored = build_quality_scores(df, all_issues)
+    issues.to_csv(REPORTS / "validation_report.csv", index=False)
+    scored.to_csv(REPORTS / "circuit_quality_scores.csv", index=False)
+    print(f"Validation found {len(issues)} issues across {issues['row_id'].nunique()} rows.")
 
-    # Save results
-    validation_path = REPORTS / "validation_report.csv"
-    quality_path = REPORTS / "circuit_quality_scores.csv"
-
-    all_issues.to_csv(validation_path, index=False)
-    quality_scored.to_csv(quality_path, index=False)
-
-    print(f"Validation complete.")
-    print(f"- Issues saved to: {validation_path}")
-    print(f"- Quality scores saved to: {quality_path}")
 
 if __name__ == "__main__":
     run_validation()

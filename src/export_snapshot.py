@@ -1,6 +1,5 @@
-import pandas as pd
+from utilities import load_latest_snapshot
 
-df = pd.read_parquet("data/processed/normalized_snapshot.parquet")
+df = load_latest_snapshot()
 df.to_csv("data/processed/wan_snapshot.csv", index=False)
-
 print("Export complete: data/processed/wan_snapshot.csv")

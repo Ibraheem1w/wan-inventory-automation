@@ -1,13 +1,13 @@
-circuit_id,vendor_service_id,site_code,carrier,access_type,bandwidth_mbps,status,start_date,end_date,expiration_date,device_hostname,wan_interface,mrc_usd,source,last_seen,quality_score,issue,severity,parsed_end_date
-A123,A123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Duplicate circuit_id,High,
-B555,B555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Duplicate circuit_id,High,
-A123,A-123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Duplicate circuit_id,High,
-B555,B-555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Duplicate circuit_id,High,
-A123,A123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Circuit already expired,High,2024-12-31
-B555,B555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Circuit already expired,High,2023-10-01
-A123,A-123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Circuit already expired,High,2024-12-31
-B555,B-555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Circuit already expired,High,2023-10-01
-A123,A123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Invalid site_code format,Low,2024-12-31
-B555,B555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2025-12-04 14:56:04.668085+00:00,1.0,Invalid site_code format,Low,2023-10-01
-A123,A-123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Invalid site_code format,Low,2024-12-31
-B555,B-555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2025-12-04 14:56:04.672557+00:00,1.0,Invalid site_code format,Low,2023-10-01
+circuit_id,vendor_service_id,site_code,carrier,access_type,bandwidth_mbps,status,start_date,end_date,expiration_date,device_hostname,wan_interface,mrc_usd,source,last_seen,source_file,row_id,issue,severity
+F111,F111,HOU03,Verizon,MPLS,,unknown,2022-08-01,2026-08-01,2026-08-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,vendor1.csv,5,Missing or unreadable required field,High
+H333,H-333,PHX02,Comcast,Broadband,100.0,unknown,2024-01-01,,,,,,vendor2,2026-10-01 20:17:47.743051+00:00,vendor2.csv,12,Missing or unreadable required field,High
+F111,F111,HOU03,Verizon,MPLS,,unknown,2022-08-01,2026-08-01,2026-08-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,vendor1.csv,5,Duplicate circuit_id within a vendor,High
+F111,F111,HOU03,Verizon,MPLS,1000.0,unknown,2022-08-01,2026-08-01,2026-08-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,vendor1.csv,6,Duplicate circuit_id within a vendor,High
+E999,E999,AUS1,Comcast,Broadband,0.0,unknown,2024-02-01,2029-02-01,2029-02-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,vendor1.csv,4,"Bandwidth outside 1 to 10,000 Mbps",Medium
+B555,B555,MEX01,Verizon,DIA,100.0,unknown,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,vendor1.csv,1,Circuit already expired,High
+F111,F111,HOU03,Verizon,MPLS,,unknown,2022-08-01,2026-08-01,2026-08-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,vendor1.csv,5,Circuit already expired,High
+F111,F111,HOU03,Verizon,MPLS,1000.0,unknown,2022-08-01,2026-08-01,2026-08-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,vendor1.csv,6,Circuit already expired,High
+B555,B-555,MEX01,Verizon,DIA,100.0,unknown,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2026-10-01 20:17:47.743051+00:00,vendor2.csv,8,Circuit already expired,High
+D888,D-888,DAL01,AT&T,Broadband,50.0,unknown,2023-01-10,2026-01-10,2026-01-10,,,,vendor2,2026-10-01 20:17:47.743051+00:00,vendor2.csv,10,Circuit already expired,High
+G222,G-222,DEN01,Lumen,DIA,300.0,unknown,2023-05-01,2045-05-01,2045-05-01,,,,vendor2,2026-10-01 20:17:47.743051+00:00,vendor2.csv,11,Expiration more than 10 years out,Low
+E999,E999,AUS1,Comcast,Broadband,0.0,unknown,2024-02-01,2029-02-01,2029-02-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,vendor1.csv,4,Invalid site_code format,Low

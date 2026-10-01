@@ -1,65 +1,45 @@
 import pandas as pd
 from pathlib import Path
+from utilities import load_latest_snapshot
 
-PROCESSED = Path("data/processed")
 REPORTS = Path("data/reports")
-REPORTS.mkdir(exist_ok=True)
 
-def load_latest_snapshot():
-    """Load the most recent normalized snapshot from data/processed."""
-    parquet_files = sorted(PROCESSED.glob("*.parquet"), reverse=True)
-    if not parquet_files:
-        raise FileNotFoundError("No snapshot files found in data/processed.")
-    return pd.read_parquet(parquet_files[0])
 
-def reconcile_bandwidth(df):
-    """Check for bandwidth mismatches between vendor sources."""
-    mismatches = df.groupby("circuit_id").agg(
-        unique_bw=("bandwidth_mbps", "nunique"),
-        values=("bandwidth_mbps", lambda x: list(set(x)))
+def compare(df, col, issue, severity):
+    # a blank from one vendor and a value from another also counts as a mismatch
+    g = df.groupby("circuit_id")[col].agg(
+        n_values=lambda x: x.nunique(dropna=False),
+        values=lambda x: sorted(set(x.astype(str))),
     ).reset_index()
+    g = g[g["n_values"] > 1].copy()
+    g["issue"] = issue
+    g["severity"] = severity
+    return g
 
-    mismatches = mismatches[mismatches["unique_bw"] > 1]
-    mismatches["issue"] = "Bandwidth mismatch"
-    mismatches["severity"] = "High"
-
-    return mismatches
-
-def reconcile_expiration(df):
-    """Check for different expiration dates between vendors."""
-    mismatches = df.groupby("circuit_id").agg(
-        unique_exp=("end_date", "nunique"),
-        values=("end_date", lambda x: list(set(x)))
-    ).reset_index()
-
-    mismatches = mismatches[mismatches["unique_exp"] > 1]
-    mismatches["issue"] = "Expiration date mismatch"
-    mismatches["severity"] = "Medium"
-
-    return mismatches
 
 def find_missing_circuits(df):
-    """Detect circuits missing from one or more vendor sources."""
-    counts = df.groupby("circuit_id")["source"].nunique().reset_index()
-    missing = counts[counts["source"] < df["source"].nunique()].copy()
-    missing["issue"] = "Missing circuit in one vendor"
-    missing["severity"] = "Medium"
-    return missing
+    n_sources = df["source"].nunique()
+    g = df.groupby("circuit_id")["source"].agg(lambda x: sorted(set(x))).reset_index(name="found_in")
+    g = g[g["found_in"].apply(len) < n_sources].copy()
+    g["issue"] = "Missing from at least one vendor"
+    g["severity"] = "Medium"
+    return g
+
 
 def run_reconciliation():
+    REPORTS.mkdir(parents=True, exist_ok=True)
     df = load_latest_snapshot()
 
-    issues = []
+    report = pd.concat([
+        compare(df, "bandwidth_mbps", "Bandwidth mismatch", "High"),
+        compare(df, "end_date", "Expiration date mismatch", "Medium"),
+        find_missing_circuits(df),
+    ], ignore_index=True)
 
-    issues.append(reconcile_bandwidth(df))
-    issues.append(reconcile_expiration(df))
-    issues.append(find_missing_circuits(df))
+    out = REPORTS / "reconciliation_report.csv"
+    report.to_csv(out, index=False)
+    print(f"Reconciliation found {len(report)} issues. Saved to {out}")
 
-    final_report = pd.concat(issues, ignore_index=True)
-    out_path = REPORTS / "reconciliation_report.csv"
-    final_report.to_csv(out_path, index=False)
-
-    print(f"Reconciliation complete. Report saved to {out_path}")
 
 if __name__ == "__main__":
     run_reconciliation()

@@ -1,1 +1,8 @@
-circuit_id,unique_bw,values,issue,severity,unique_exp,source
+circuit_id,n_values,values,issue,severity,found_in
+C777,2.0,"['1000.0', '500.0']",Bandwidth mismatch,High,
+F111,2.0,"['1000.0', 'nan']",Bandwidth mismatch,High,
+D888,2.0,"['2026-01-10', '2028-01-10']",Expiration date mismatch,Medium,
+E999,,,Missing from at least one vendor,Medium,['vendor1']
+F111,,,Missing from at least one vendor,Medium,['vendor1']
+G222,,,Missing from at least one vendor,Medium,['vendor2']
+H333,,,Missing from at least one vendor,Medium,['vendor2']

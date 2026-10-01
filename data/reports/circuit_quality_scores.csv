@@ -1,5 +1,14 @@
-circuit_id,vendor_service_id,site_code,carrier,access_type,bandwidth_mbps,status,start_date,end_date,expiration_date,device_hostname,wan_interface,mrc_usd,source,last_seen,quality_score,parsed_end_date
-A123,A123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor1,2025-12-04 14:56:04.668085+00:00,0,2024-12-31
-B555,B555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2025-12-04 14:56:04.668085+00:00,0,2023-10-01
-A123,A-123,NYC01,AT&T,MPLS,200,in_service,2021-01-01,2024-12-31,2024-12-31,,,,vendor2,2025-12-04 14:56:04.672557+00:00,0,2024-12-31
-B555,B-555,MEX01,Verizon,DIA,100,in_service,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2025-12-04 14:56:04.672557+00:00,0,2023-10-01
+circuit_id,vendor_service_id,site_code,carrier,access_type,bandwidth_mbps,status,start_date,end_date,expiration_date,device_hostname,wan_interface,mrc_usd,source,last_seen,quality_score,source_file,row_id
+A123,A123,NYC01,AT&T,MPLS,200.0,unknown,2021-01-01,2027-12-31,2027-12-31,,,,vendor1,2026-10-01 20:17:47.737174+00:00,1.0,vendor1.csv,0
+B555,B555,MEX01,Verizon,DIA,100.0,unknown,2020-05-20,2023-10-01,2023-10-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,0.6,vendor1.csv,1
+C777,C777,ATL02,Lumen,DIA,500.0,unknown,2022-03-15,2027-06-30,2027-06-30,,,,vendor1,2026-10-01 20:17:47.737174+00:00,1.0,vendor1.csv,2
+D888,D888,DAL01,AT&T,Broadband,50.0,unknown,2023-01-10,2028-01-10,2028-01-10,,,,vendor1,2026-10-01 20:17:47.737174+00:00,1.0,vendor1.csv,3
+E999,E999,AUS1,Comcast,Broadband,0.0,unknown,2024-02-01,2029-02-01,2029-02-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,0.7,vendor1.csv,4
+F111,F111,HOU03,Verizon,MPLS,,unknown,2022-08-01,2026-08-01,2026-08-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,0.0,vendor1.csv,5
+F111,F111,HOU03,Verizon,MPLS,1000.0,unknown,2022-08-01,2026-08-01,2026-08-01,,,,vendor1,2026-10-01 20:17:47.737174+00:00,0.2,vendor1.csv,6
+A123,A-123,NYC01,AT&T,MPLS,200.0,unknown,2021-01-01,2027-12-31,2027-12-31,,,,vendor2,2026-10-01 20:17:47.743051+00:00,1.0,vendor2.csv,7
+B555,B-555,MEX01,Verizon,DIA,100.0,unknown,2020-05-20,2023-10-01,2023-10-01,,,,vendor2,2026-10-01 20:17:47.743051+00:00,0.6,vendor2.csv,8
+C777,C-777,ATL02,Lumen,DIA,1000.0,unknown,2022-03-15,2027-06-30,2027-06-30,,,,vendor2,2026-10-01 20:17:47.743051+00:00,1.0,vendor2.csv,9
+D888,D-888,DAL01,AT&T,Broadband,50.0,unknown,2023-01-10,2026-01-10,2026-01-10,,,,vendor2,2026-10-01 20:17:47.743051+00:00,0.6,vendor2.csv,10
+G222,G-222,DEN01,Lumen,DIA,300.0,unknown,2023-05-01,2045-05-01,2045-05-01,,,,vendor2,2026-10-01 20:17:47.743051+00:00,0.9,vendor2.csv,11
+H333,H-333,PHX02,Comcast,Broadband,100.0,unknown,2024-01-01,,,,,,vendor2,2026-10-01 20:17:47.743051+00:00,0.6,vendor2.csv,12
