@@ -9,7 +9,7 @@ def compare(df, col, issue, severity):
     # a blank from one vendor and a value from another also counts as a mismatch
     g = df.groupby("circuit_id")[col].agg(
         n_values=lambda x: x.nunique(dropna=False),
-        values=lambda x: sorted(set(x.astype(str))),
+        values=lambda x: sorted(set(map(str, x))),
     ).reset_index()
     g = g[g["n_values"] > 1].copy()
     g["issue"] = issue

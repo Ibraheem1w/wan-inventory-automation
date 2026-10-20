@@ -10,4 +10,4 @@ data/reports: reconciliation and validation output.
 src: all of the scripts.
 docs: this file and the data dictionary.
 
-Ideas not built yet: expiration alerts, dashboards, and automated tests.
+Ideas not built yet: expiration alerts and dashboards.

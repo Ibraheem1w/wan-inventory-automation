@@ -33,6 +33,13 @@ Results from reconcile.py and validate_inventory.py are saved in data/reports.
 
 Run these from the top folder of the project. Real vendor files go in data/raw. Give them names that contain vendor1 or vendor2 so harvest.py knows which format they use. Files named exactly vendor1.csv and vendor2.csv are the made up samples.
 
+## Tests
+
+    pip install -r requirements-dev.txt
+    python3 -m pytest
+
+The tests cover the circuit ID cleanup, each vendor conversion, every validation check and the quality score, the reconciliation comparisons, and a full run of harvest, reconcile and validate on small sample files.
+
 ## Limits
 
 The sample data is made up.
